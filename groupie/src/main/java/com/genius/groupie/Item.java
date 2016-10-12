@@ -21,7 +21,17 @@ import java.util.Map;
  */
 public abstract class Item<T extends ViewDataBinding> implements Group, SpanSizeProvider {
 
+    private static long ID_COUNTER = 0;
     protected GroupDataObserver parentDataObserver;
+    private final long id;
+
+    public Item() {
+        this(ID_COUNTER--);
+    }
+
+    protected Item(long id) {
+        this.id = id;
+    }
 
     public void bind(RecyclerView.ViewHolder viewHolder, int position, View.OnClickListener onItemClickListener) {
         ViewHolder<T> holder = (ViewHolder<T>) viewHolder;
@@ -104,5 +114,18 @@ public abstract class Item<T extends ViewDataBinding> implements Group, SpanSize
      */
     public Map<String, Object> getExtras() {
         return null;
+    }
+
+    /**
+     * If you don't specify an id, this id is an auto-generated unique negative integer for each Item (the less
+     * likely to conflict with your model IDs.)
+     *
+     * You may prefer to override it with the ID of a model object, for example the primary key of
+     * an object from a database that it represents.  It is used to tell if items of the same view type
+     * are "the same as" each other in comparison using DiffUtil.
+     * @return
+     */
+    public long getId() {
+        return id;
     }
 }
